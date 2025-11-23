@@ -606,7 +606,23 @@ tag: 4.4
 ```
 ![solution_monfdb](./5Gfree/solution_mongo.png)
 
-<!-- ###################################### -->
+- Ensuite on recupère l'image récente mongo:4.4
+
+
+
+```bash
+# Télécharger l'image dans la vm 
+sudo docker pull mongo:4.4
+# Charger l'image dans le cluster kind
+sudo kind load docker-image mongo:4.4 --name kind
+
+# Supprimer l’ancien StatefulSet MongoDB
+sudo kubectl delete pvc -n free5gc --all
+sudo kubectl delete pv example-local-pv9
+#(car on verra sur partie erreur si on suit pas ces étapes)
+```
+![mongo](./5Gfree/05_.2.png)
+
 ### 5.2.2 Création du dossier de stockage dans le worker
 MongoDB nécessite un volume persistant.
 Dans un cluster KinD, ce stockage doit être créé manuellement dans le conteneur du nœud worker.
@@ -801,33 +817,8 @@ sudo helm -n free5gc install free5gc-premier ./free5gc/
 sudo kubectl get pods -n free5gc
 
 ```
-![deziper](./5Gfree/05_dezip_mongo.png)
-ensuite chercher le dossier mongodb afin de modifier le fichier value 
-![mongo](./5Gfree/05_.2.png)
- modifier le fichier volume.yaml
-Avant : 
-![volume](./5Gfree/06_mongo_2.png)
-Aprés modification 
-![volume2](./5Gfree/06_value_mongo.png)
-ensuite on recpee l'image récente mongo:4.4
-```bash
-# Télécharger l'image dans la vm 
-sudo docker pull mongo:4.4
-# Charger l'image dans le cluster kind
-sudo kind load docker-image mongo:4.4 --name kind
 
-# Supprimer l’ancien StatefulSet MongoDB
-sudo kubectl delete pvc -n free5gc --all
-sudo kubectl delete pv example-local-pv9
 
-# Partie sur $HOME
-cd 
-
-sudo kubectl apply -f volume.yaml
-
-# ensuite reinstaller free5GC
-cd ~/towards5gs-helm/charts
-sudo helm -n free5gc install free5gc-premier ./free5gc/
 
 ```
 ## 5.5 Installation de Free5GC via Helm
